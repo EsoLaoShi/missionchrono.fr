@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confidentialité Mission Chrono</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f4f5f8;
+    --surface: #ffffff;
+    --ink: #161b22;
+    --ink-2: #565f6d;
+    --ink-3: #87909c;
+    --accent: #1d4ed8;
+    --accent-soft: #eaf0ff;
+    --rule: #dfe3ea;
+    --tag-bg: #eef1f5;
+    --grid-line: rgba(29, 78, 216, 0.05);
+    --focus: #1d4ed8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #05070c;
+      --surface: #0d1220;
+      --ink: #e8ebf1;
+      --ink-2: #97a2b6;
+      --ink-3: #5f6a80;
+      --accent: #6f9bff;
+      --accent-soft: rgba(111, 155, 255, 0.12);
+      --rule: #212a3d;
+      --tag-bg: #131a2a;
+      --grid-line: rgba(111, 155, 255, 0.06);
+      --focus: #6f9bff;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #05070c;
+    --surface: #0d1220;
+    --ink: #e8ebf1;
+    --ink-2: #97a2b6;
+    --ink-3: #5f6a80;
+    --accent: #6f9bff;
+    --accent-soft: rgba(111, 155, 255, 0.12);
+    --rule: #212a3d;
+    --tag-bg: #131a2a;
+    --grid-line: rgba(111, 155, 255, 0.06);
+    --focus: #6f9bff;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .mono {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 64px 24px 120px;
+  }
+
+  /* ---------- Header / dossier stamp ---------- */
+
+  .dossier {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 36px clamp(20px, 5vw, 48px);
+    margin-bottom: 48px;
+  }
+
+  .dossier-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 22px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .brand-mark {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .brand-mark::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .doc-meta {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink-3);
+    text-align: right;
+    letter-spacing: 0.02em;
+    line-height: 1.8;
+  }
+  .doc-meta strong { color: var(--ink-2); font-weight: 500; }
+
+  h1 {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 5vw, 40px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+
+  .dossier-sub {
+    color: var(--ink-2);
+    font-size: 16px;
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .tag {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    background: var(--tag-bg);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 5px 9px;
+  }
+
+  /* ---------- Layout: index + content ---------- */
+
+  .layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  nav.index {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-right: 8px;
+    border-right: 1px solid var(--rule);
+  }
+  nav.index a {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    text-decoration: none;
+    padding: 6px 0;
+    display: flex;
+    gap: 8px;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    margin-left: -1px;
+  }
+  nav.index a span { color: var(--ink-3); }
+  nav.index a:hover { color: var(--accent); border-left-color: var(--accent); }
+
+  main { min-width: 0; }
+
+  section {
+    padding: 36px 0;
+    border-bottom: 1px solid var(--rule);
+    scroll-margin-top: 20px;
+  }
+  section:last-of-type { border-bottom: none; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .section-num {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 4px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+  }
+  h2 {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.005em;
+    margin: 0;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+
+  section p { margin: 0 0 14px; max-width: 68ch; color: var(--ink); }
+  section p.lead { color: var(--ink-2); }
+  section p:last-child { margin-bottom: 0; }
+
+  h3 {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    margin: 22px 0 10px;
+  }
+
+  ul.data-list { list-style: none; margin: 0 0 14px; padding: 0; max-width: 68ch; }
+  ul.data-list li {
+    padding: 10px 0 10px 20px;
+    border-top: 1px solid var(--rule);
+    position: relative;
+  }
+  ul.data-list li:first-child { border-top: none; }
+  ul.data-list li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 19px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  ul.data-list b { color: var(--ink); font-weight: 600; }
+
+  ul.plain { margin: 0 0 14px; padding-left: 20px; max-width: 68ch; }
+  ul.plain li { margin-bottom: 6px; }
+
+  .callout {
+    background: var(--accent-soft);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin: 18px 0;
+    max-width: 68ch;
+  }
+  .callout p { margin: 0; font-size: 15.5px; color: var(--ink); }
+  .callout p + p { margin-top: 8px; }
+
+  .fine {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-top: 10px;
+  }
+
+  .contact-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    max-width: 68ch;
+  }
+  .contact-card + .contact-card { margin-top: 12px; }
+  .contact-card .label {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 4px;
+  }
+  .contact-card .value {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .contact-card a.btn {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    text-decoration: none;
+    color: var(--surface);
+    background: var(--accent);
+    padding: 10px 18px;
+    border-radius: 5px;
+    letter-spacing: 0.01em;
+  }
+  .contact-card a.btn:hover { opacity: 0.92; }
+
+  footer {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-3);
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 760px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.index {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      border-right: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 16px;
+      margin-bottom: 8px;
+    }
+    nav.index a { border-left: none; padding-left: 0; }
+    .doc-meta { text-align: left; }
+    .dossier-top { flex-direction: column; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    section { scroll-behavior: smooth; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="dossier">
+    <div class="dossier-top">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        Mission Chrono
+      </div>
+      <div class="doc-meta">
+        RÉF&nbsp;: MC-CONF-2026<br>
+        <strong>Mise à jour&nbsp;:</strong> 10.09.2026<br>
+        <strong>Version&nbsp;:</strong> 1.1
+      </div>
+    </div>
+    <h1>Politique de confidentialité</h1>
+    <p class="dossier-sub">Comment Mission Chrono collecte, utilise et protège vos données lorsque vous utilisez l'application de covoiturage réservée au personnel militaire, pour un usage personnel et civil.</p>
+    <div class="tags">
+      <span class="tag">Édité par Fast Computer Company</span>
+      <span class="tag">RGPD</span>
+      <span class="tag">CCPA</span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <nav class="index" aria-label="Sommaire">
+      <a href="#responsable"><span>01</span> Responsable</a>
+      <a href="#donnees"><span>02</span> Données collectées</a>
+      <a href="#localisation"><span>03</span> Géolocalisation</a>
+      <a href="#usage"><span>04</span> Utilisation</a>
+      <a href="#partage"><span>05</span> Partage</a>
+      <a href="#conservation"><span>06</span> Conservation</a>
+      <a href="#securite"><span>07</span> Sécurité</a>
+      <a href="#droits"><span>08</span> Vos droits</a>
+      <a href="#mineurs"><span>09</span> Mineurs</a>
+      <a href="#modifications"><span>10</span> Modifications</a>
+      <a href="#contact"><span>11</span> Contact</a>
+    </nav>
+
+    <main>
+
+      <section id="responsable">
+        <div class="section-head"><span class="section-num">01</span><h2>Responsable du traitement</h2></div>
+        <p>Mission Chrono est éditée par <b>Fast Computer Company</b> (ci-après « nous »), responsable du traitement des données personnelles décrites dans ce document au sens du Règlement Général sur la Protection des Données (RGPD) et, le cas échéant, du California Consumer Privacy Act (CCPA).</p>
+        <p class="lead">Mission Chrono est une application de mise en relation pour le covoiturage entre militaires, à titre strictement personnel et civil. Elle sert à faciliter les trajets du quotidien — du domicile vers la base, ou d'une base à une autre — et n'a aucun lien avec des missions, des zones ou des terrains d'opération militaire.</p>
+      </section>
+
+      <section id="donnees">
+        <div class="section-head"><span class="section-num">02</span><h2>Données que nous collectons</h2></div>
+        <p class="lead">Nous ne collectons que les données nécessaires au fonctionnement du service. Voici, en détail, ce qui est enregistré.</p>
+
+        <h3>Compte et identité</h3>
+        <ul class="data-list">
+          <li><b>Nom de code (pseudonyme)</b> utilisé pour vous identifier dans l'application</li>
+          <li><b>Matricule ou adresse e-mail</b>, utilisé pour la connexion</li>
+          <li><b>Mot de passe</b>, stocké de façon sécurisée sur nos serveurs</li>
+          <li><b>Nom complet</b> et <b>numéro de téléphone</b></li>
+          <li><b>Ville</b> de résidence</li>
+          <li><b>Question et réponse de sécurité</b>, utilisées pour la récupération de compte</li>
+        </ul>
+
+        <h3>Affectation et progression</h3>
+        <ul class="data-list">
+          <li><b>Branche militaire</b> (armée de terre, marine, gendarmerie, etc.)</li>
+          <li><b>Grade</b> et <b>points d'expérience</b> liés à votre activité dans l'application</li>
+        </ul>
+
+        <h3>Véhicule (si vous proposez des trajets)</h3>
+        <ul class="data-list">
+          <li><b>Marque</b>, <b>couleur</b> et <b>nombre de places</b> du véhicule</li>
+          <li><b>Plaque d'immatriculation</b></li>
+        </ul>
+
+        <h3>Trajets</h3>
+        <ul class="data-list">
+          <li><b>Points de départ et d'arrivée</b> (coordonnées et adresse)</li>
+          <li><b>Date, heure, rôle</b> (conducteur ou passager) et <b>nombre de places</b></li>
+          <li><b>Prix</b> du trajet, lorsque renseigné</li>
+          <li><b>Liste des passagers</b> associés à un trajet</li>
+          <li><b>Bagages</b> déclarés pour le trajet</li>
+        </ul>
+
+        <h3>Préférences</h3>
+        <ul class="data-list">
+          <li>Activation des <b>alertes de trajet</b></li>
+          <li>Activation du <b>mode discret</b></li>
+        </ul>
+
+        <div class="callout">
+          <p><b>Ce que nous ne collectons pas&nbsp;:</b> Mission Chrono n'intègre aucun outil d'analyse d'audience, de publicité ou de traçage tiers, et ne demande aucune autorisation de suivi entre applications. Aucune donnée de paiement n'est collectée&nbsp;: l'application ne propose pas de fonctionnalité de paiement intégré à ce jour.</p>
+        </div>
+      </section>
+
+      <section id="localisation">
+        <div class="section-head"><span class="section-num">03</span><h2>Géolocalisation</h2></div>
+        <p>Lorsque vous recherchez ou publiez un trajet, Mission Chrono vous demande l'autorisation d'accéder à votre position <b>au moment où vous utilisez l'application</b> (autorisation « Lors de l'utilisation de l'app »), afin de vous proposer des trajets à proximité et de pré-remplir votre point de départ.</p>
+        <p>Cette position est convertie en adresse lisible (ville, rue) et associée au trajet concerné. Mission Chrono <b>ne suit jamais votre position en continu</b> et <b>n'accède pas à votre position lorsque l'application est fermée ou en arrière-plan</b>.</p>
+        <p class="fine">Vous pouvez révoquer l'accès à la localisation à tout moment depuis les réglages de votre appareil ; certaines fonctionnalités de recherche de trajet ne seront alors plus disponibles.</p>
+      </section>
+
+      <section id="usage">
+        <div class="section-head"><span class="section-num">04</span><h2>Comment nous utilisons ces données</h2></div>
+        <ul class="plain">
+          <li>Créer et sécuriser votre compte, et vous permettre de vous reconnecter ou de le récupérer</li>
+          <li>Mettre en relation les militaires effectuant des trajets civils compatibles (proximité géographique, horaires)</li>
+          <li>Afficher votre grade, votre branche et votre pseudonyme aux autres participants d'un trajet, pour instaurer un climat de confiance entre membres du personnel militaire</li>
+          <li>Faire progresser votre grade et vos points d'expérience en fonction de votre activité</li>
+          <li>Assurer le bon fonctionnement, la maintenance et l'amélioration de l'application</li>
+        </ul>
+      </section>
+
+      <section id="partage">
+        <div class="section-head"><span class="section-num">05</span><h2>Partage des données</h2></div>
+        <p><b>Entre utilisateurs&nbsp;:</b> lorsque vous publiez ou rejoignez un trajet, votre pseudonyme, grade, branche et, si vous conduisez, les informations de votre véhicule sont visibles par les autres participants à ce trajet précis. Vos coordonnées de contact ne sont pas partagées automatiquement.</p>
+        <p><b>Hébergement technique&nbsp;:</b> vos données sont stockées et traitées par <b>Back4App</b>, un prestataire d'hébergement backend, agissant en tant que sous-traitant pour notre compte. Cet hébergement peut impliquer un transfert de données hors de votre pays de résidence ; dans ce cas, ce transfert est encadré par les garanties contractuelles prévues par notre prestataire.</p>
+        <p><b>Nous ne vendons jamais vos données</b> et ne les partageons avec aucun tiers à des fins commerciales ou publicitaires. Vos données ne sont communiquées à des autorités que si la loi nous y oblige.</p>
+      </section>
+
+      <section id="conservation">
+        <div class="section-head"><span class="section-num">06</span><h2>Durée de conservation</h2></div>
+        <p>Vos données sont conservées tant que votre compte reste actif. Vous pouvez demander la suppression de votre compte et des données associées à tout moment&nbsp;: voir la section Contact ci-dessous. Nous procédons alors à leur suppression dans un délai raisonnable, sauf obligation légale de conservation plus longue.</p>
+      </section>
+
+      <section id="securite">
+        <div class="section-head"><span class="section-num">07</span><h2>Sécurité</h2></div>
+        <p>Nous mettons en œuvre des mesures raisonnables pour protéger vos données contre l'accès non autorisé, la perte ou la divulgation. L'accès à votre compte est protégé par mot de passe.</p>
+        <p>Si vous activez l'option « Mémoriser l'accès » sur l'écran de connexion, vos identifiants sont conservés localement sur votre appareil afin de vous éviter de les ressaisir. Nous vous recommandons de ne pas activer cette option sur un appareil partagé ou non personnel.</p>
+        <p class="fine">Aucun système n'étant infaillible, nous ne pouvons garantir une sécurité absolue. Nous travaillons en continu à renforcer la protection de la plateforme.</p>
+      </section>
+
+      <section id="droits">
+        <div class="section-head"><span class="section-num">08</span><h2>Vos droits</h2></div>
+        <p class="lead">Conformément au RGPD et, si applicable, au CCPA, vous disposez des droits suivants sur vos données personnelles&nbsp;:</p>
+        <ul class="plain">
+          <li>Droit d'accès à vos données et d'obtention d'une copie</li>
+          <li>Droit de rectification des données inexactes ou incomplètes</li>
+          <li>Droit à l'effacement (« droit à l'oubli »)</li>
+          <li>Droit à la limitation et à l'opposition du traitement</li>
+          <li>Droit à la portabilité de vos données</li>
+          <li>Droit de retirer votre consentement à tout moment</li>
+          <li>Droit d'introduire une réclamation auprès de l'autorité de contrôle compétente (en France, la CNIL)</li>
+        </ul>
+        <p>Pour exercer l'un de ces droits, contactez-nous à l'adresse indiquée en section 11. Nous nous engageons à répondre dans un délai raisonnable et conforme aux exigences légales applicables.</p>
+      </section>
+
+      <section id="mineurs">
+        <div class="section-head"><span class="section-num">09</span><h2>Utilisateurs mineurs</h2></div>
+        <p>Mission Chrono est destinée au personnel militaire et n'est pas conçue pour être utilisée par des mineurs. Nous ne collectons pas sciemment de données concernant des personnes de moins de 18 ans.</p>
+      </section>
+
+      <section id="modifications">
+        <div class="section-head"><span class="section-num">10</span><h2>Modifications de cette politique</h2></div>
+        <p>Cette politique peut être mise à jour pour refléter des évolutions de l'application ou de la réglementation. La date de mise à jour en haut de ce document sera actualisée en conséquence. Nous vous invitons à la consulter régulièrement.</p>
+      </section>
+
+      <section id="contact">
+        <div class="section-head"><span class="section-num">11</span><h2>Contact</h2></div>
+        <p>Pour toute question concernant cette politique ou pour exercer vos droits sur vos données, contactez-nous&nbsp;:</p>
+        <div class="contact-card">
+          <div>
+            <div class="label">Adresse e-mail</div>
+            <div class="value mono">contact@appify.design</div>
+          </div>
+          <a class="btn" href="mailto:contact@appify.design">Écrire un e-mail</a>
+        </div>
+        <div class="contact-card">
+          <div>
+            <div class="label">Téléphone</div>
+            <div class="value mono">+595 971 507 500</div>
+          </div>
+          <a class="btn" href="tel:+595971507500">Appeler</a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer>
+    <span>Mission Chrono — Fast Computer Company</span>
+    <span>© 2026 Fast Computer Company. Tous droits réservés.</span>
+  </footer>
+
+</div>
+</body>
+</html>
