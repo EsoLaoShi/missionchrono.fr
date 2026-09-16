@@ -1,0 +1,379 @@
+<title>Fonctionnalités — Mission Chrono</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="stylesheet" href="/style.css">
+<style>
+  /* ---------- Page hero ---------- */
+  .page-hero {
+    position: relative;
+    padding: 40px 0 44px;
+    overflow: hidden;
+    background: linear-gradient(115deg, #0c1524 0%, #16233f 35%, #2c2a24 62%, #6b4f34 82%, #1c140c 100%);
+    border-bottom: 1px solid var(--line);
+  }
+  .page-hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(100deg, rgba(4,6,11,0.92) 0%, rgba(4,6,11,0.55) 45%, rgba(4,6,11,0.15) 100%);
+    pointer-events: none;
+  }
+  .page-hero-cursive {
+    position: absolute; top: 26px; right: 6%; z-index: 1;
+    font-family: 'Caveat', cursive; font-weight: 700; font-size: 26px; line-height: 1.05;
+    color: var(--accent-2); text-align: right; transform: rotate(-3deg);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.55);
+  }
+  .page-hero-flag {
+    position: absolute; top: 72px; right: 9%; z-index: 1;
+    width: 46px; height: 10px; border-radius: 2px; overflow: hidden; display: flex;
+    transform: rotate(-3deg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+  .page-hero-flag span { flex: 1; }
+  .page-hero-flag span:nth-child(1) { background: #3854e0; }
+  .page-hero-flag span:nth-child(2) { background: #eef2f9; }
+  .page-hero-flag span:nth-child(3) { background: #e0473f; }
+
+  .page-hero-grid { position: relative; z-index: 1; max-width: 640px; }
+  .page-hero h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.03; margin: 14px 0 14px; }
+  .page-hero h1 .blue { color: var(--accent-2); }
+  .page-hero p { color: var(--ink-dim); font-size: 15.5px; max-width: 56ch; margin: 0; }
+
+  /* ---------- Feature cards ---------- */
+  section.features { padding: 40px 0 8px; }
+  .feature-card {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 24px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px;
+    margin-bottom: 20px;
+  }
+  .feature-head { display: flex; align-items: center; gap: 16px; margin-bottom: 4px; }
+  .feature-head .icon-circle { width: 54px; height: 54px; }
+  .feature-head .icon-circle svg { width: 26px; height: 26px; }
+  .feature-head-text { display: flex; flex-direction: column; gap: 2px; }
+  .num-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--accent-2);
+  }
+  .feature-head-text h3 { font-size: 19px; letter-spacing: 0.01em; }
+  .feature-card > .feature-text > p.feature-desc { color: var(--ink-dim); font-size: 14.5px; margin: 10px 0 0; }
+
+  .check-list { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .check-list li { display: flex; align-items: flex-start; gap: 9px; font-size: 13.5px; color: var(--ink-dim); }
+  .check-list svg { width: 15px; height: 15px; color: var(--accent-2); flex-shrink: 0; margin-top: 3px; }
+
+  .feature-photo { position: relative; }
+  .feature-photo .photo-slot { height: 100%; min-height: 210px; }
+  .feature-arrow {
+    position: absolute; top: 50%; right: -18px; transform: translateY(-50%);
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--accent); color: #04060b;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 18px rgba(61,139,255,0.35);
+  }
+  .feature-arrow svg { width: 18px; height: 18px; }
+
+  @media (max-width: 760px) {
+    .feature-card { grid-template-columns: 1fr; }
+    .feature-arrow { display: none; }
+    .feature-photo .photo-slot { min-height: 160px; }
+  }
+
+  /* ---------- Evolution band ---------- */
+  section.evo { padding: 24px 0 56px; }
+  .evo-band {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    background: var(--surface-2);
+    border: 1px solid var(--line-strong);
+    border-radius: 16px;
+    padding: 22px 24px;
+  }
+  .evo-band .icon-circle { width: 48px; height: 48px; flex-shrink: 0; }
+  .evo-band .icon-circle svg { width: 22px; height: 22px; }
+  .evo-text { flex: 1; min-width: 220px; }
+  .evo-text h3 { font-size: 16px; margin-bottom: 6px; }
+  .evo-text p { color: var(--ink-dim); font-size: 13.5px; margin: 0; max-width: 56ch; }
+  .evo-band .btn-bug { flex-shrink: 0; }
+
+  /* ---------- Benefit row ---------- */
+  section.benefits { padding: 0 0 56px; }
+  .benefit-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .benefit-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+  .benefit-item .icon-circle { width: 52px; height: 52px; }
+  .benefit-item .icon-circle svg { width: 24px; height: 24px; }
+  .benefit-item h4 { font-size: 14.5px; font-weight: 600; color: var(--ink); margin: 0; }
+  .benefit-item p { font-size: 12.5px; color: var(--ink-faint); margin: 0; }
+  @media (max-width: 640px) { .benefit-row { grid-template-columns: 1fr; gap: 28px; } }
+
+  /* ---------- Ready band ---------- */
+  section.ready-band {
+    padding: 40px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, transparent, var(--accent-soft) 50%, transparent);
+  }
+  .ready-inner { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; justify-content: space-between; }
+  .ready-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 240px; }
+  .ready-left .icon-circle { width: 48px; height: 48px; flex-shrink: 0; }
+  .ready-left .icon-circle svg { width: 22px; height: 22px; }
+  .ready-left h3 { font-size: 18px; margin-bottom: 4px; }
+  .ready-left p { color: var(--ink-dim); font-size: 13.5px; margin: 0; }
+</style>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="/" class="brand">
+      <img class="brand-mark" src="/logo.png" alt="Mission Chrono">
+      <span class="brand-text"><span class="bt1">Mission</span><span class="bt2">Chrono</span></span>
+    </a>
+    <div class="topbar-right">
+      <nav class="nav-desktop">
+        <a href="/">Accueil</a>
+        <a href="/fonctionnalites/" class="active">Fonctionnalités</a>
+        <a href="/actualites/">Actualités</a>
+        <a href="/confidentialite/">Confidentialité</a>
+      </nav>
+      <a class="btn-download" href="/#telecharger">Télécharger</a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="mobileNav" aria-label="Ouvrir le menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <div class="wrap mobile-nav-inner">
+      <a href="/">Accueil</a>
+      <a href="/fonctionnalites/" class="active">Fonctionnalités</a>
+      <a href="/actualites/">Actualités</a>
+      <a href="/confidentialite/">Confidentialité</a>
+      <a class="btn-download" href="/#telecharger">Télécharger</a>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="page-hero-cursive">Ensemble<br>plus loin</div>
+  <span class="page-hero-flag" aria-hidden="true"><span></span><span></span><span></span></span>
+  <div class="wrap page-hero-grid">
+    <div class="eyebrow">Fonctionnalités</div>
+    <h1>Des trajets adaptés<br><span class="blue">à votre quotidien</span></h1>
+    <p>Mission Chrono vous propose différentes solutions de déplacement pour vous aider à voyager plus facilement, en toute simplicité.</p>
+  </div>
+</section>
+
+<section class="features">
+  <div class="wrap">
+
+    <div class="feature-card">
+      <div class="feature-text">
+        <div class="feature-head">
+          <span class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span>
+          <div class="feature-head-text">
+            <span class="num-tag">01 · RECHERCHE</span>
+            <h3>Covoiturage instantané</h3>
+          </div>
+        </div>
+        <p class="feature-desc">Trouvez un trajet disponible en quelques minutes, près de vous.</p>
+        <ul class="check-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Recherchez un trajet autour de votre position</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Visualisez les conducteurs et passagers disponibles</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Échangez facilement et partez rapidement</li>
+        </ul>
+      </div>
+      <div class="feature-photo">
+        <div class="photo-slot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+          <span class="photo-caption">Des trajets rapides<br>quand vous en avez besoin</span>
+        </div>
+        <span class="feature-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-text">
+        <div class="feature-head">
+          <span class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg></span>
+          <div class="feature-head-text">
+            <span class="num-tag">02 · QUOTIDIEN</span>
+            <h3>Covoiturage planifié</h3>
+          </div>
+        </div>
+        <p class="feature-desc">Organisez vos trajets à l'avance (domicile-base, exercices, permissions...).</p>
+        <ul class="check-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Planifiez vos déplacements</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Choisissez votre itinéraire et vos horaires</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Voyagez avec des personnes de confiance</li>
+        </ul>
+      </div>
+      <div class="feature-photo">
+        <div class="photo-slot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg>
+          <span class="photo-caption">Anticipez vos trajets<br>en toute sérénité</span>
+        </div>
+        <span class="feature-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-text">
+        <div class="feature-head">
+          <span class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 19c0-3 2.7-5.5 6-5.5s6 2.5 6 5.5M13 13.7c2.8.4 5 2.6 5 5.3"/></svg></span>
+          <div class="feature-head-text">
+            <span class="num-tag">03 · CONDUCTEUR</span>
+            <h3>Taxi partagé</h3>
+          </div>
+        </div>
+        <p class="feature-desc">Voyagez en taxi à plusieurs et réduisez les frais.</p>
+        <ul class="check-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Trouvez d'autres passagers sur le même trajet</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Partagez le coût du trajet</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Idéal pour les sorties et déplacements ponctuels</li>
+        </ul>
+      </div>
+      <div class="feature-photo">
+        <div class="photo-slot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 19c0-3 2.7-5.5 6-5.5s6 2.5 6 5.5M13 13.7c2.8.4 5 2.6 5 5.3"/></svg>
+          <span class="photo-caption">Partagez un taxi,<br>réduisez les frais</span>
+        </div>
+        <span class="feature-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-text">
+        <div class="feature-head">
+          <span class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5V13l1.5-4.5A2 2 0 0 1 7.4 7h9.2a2 2 0 0 1 1.9 1.5L20 13v3.5"/><path d="M4 16.5h16M6.5 16.5v2M17.5 16.5v2"/><circle cx="7.5" cy="13.5" r="1"/><circle cx="16.5" cy="13.5" r="1"/></svg></span>
+          <div class="feature-head-text">
+            <span class="num-tag">04 · RÉCURRENT</span>
+            <h3>Mission quotidienne</h3>
+          </div>
+        </div>
+        <p class="feature-desc">Enregistrez vos trajets récurrents pour les retrouver facilement.</p>
+        <ul class="check-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Domicile ↔ lieu de travail</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Trajets réguliers</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Gagnez du temps au quotidien</li>
+        </ul>
+      </div>
+      <div class="feature-photo">
+        <div class="photo-slot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5V13l1.5-4.5A2 2 0 0 1 7.4 7h9.2a2 2 0 0 1 1.9 1.5L20 13v3.5"/><path d="M4 16.5h16M6.5 16.5v2M17.5 16.5v2"/><circle cx="7.5" cy="13.5" r="1"/><circle cx="16.5" cy="13.5" r="1"/></svg>
+          <span class="photo-caption">Vos trajets habituels<br>en un seul clic</span>
+        </div>
+        <span class="feature-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="evo">
+  <div class="wrap">
+    <div class="evo-band">
+      <span class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></span>
+      <div class="evo-text">
+        <h3>Une application en évolution</h3>
+        <p>De nouvelles fonctionnalités arriveront progressivement grâce à vos retours. N'hésitez pas à nous signaler un bug ou à proposer une amélioration.</p>
+      </div>
+      <a class="btn-bug" href="https://www.appify.design/fr/bug-review" target="_blank" rel="noopener">
+        <svg class="bug-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9V7a3 3 0 1 1 6 0v2M8 9h8a1 1 0 0 1 1 1v4a5 5 0 0 1-10 0v-4a1 1 0 0 1 1-1Z"/><path d="M4 10l3.5 1M20 10l-3.5 1M4 17l3.5-1.2M20 17l-3.5-1.2M12 9v9"/></svg>
+        <span>Signaler un bug ou une amélioration</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="benefits">
+  <div class="wrap">
+    <div class="benefit-row">
+      <div class="benefit-item">
+        <span class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21c8-1 13-6 14-14C11 8 6 13 5 21Z"/><path d="M5 21c1-3 3-6 6-8"/></svg></span>
+        <h4>Moins de trafic</h4>
+        <p>Des déplacements plus fluides</p>
+      </div>
+      <div class="benefit-item">
+        <span class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8c-1-1.6-2.7-2.5-5-2.5-3.6 0-6.2 2.3-6.9 6.5M17 16c-1 1.6-2.7 2.5-5 2.5-3.6 0-6.2-2.3-6.9-6.5M3.5 9.5h9M3.5 14.5h9"/></svg></span>
+        <h4>Moins de frais</h4>
+        <p>Partagez les coûts</p>
+      </div>
+      <div class="benefit-item">
+        <span class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 19.5c0-3.3 2.7-6 6-6s6 2.7 6 6M12 13.7c3 .5 6 2.8 6 5.8"/></svg></span>
+        <h4>Plus de solidarité</h4>
+        <p>Une communauté qui s'entraide</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ready-band">
+  <div class="wrap ready-inner">
+    <div class="ready-left">
+      <span class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></span>
+      <div>
+        <h3>Prêt à essayer ?</h3>
+        <p>Téléchargez l'application et rejoignez la communauté.</p>
+      </div>
+    </div>
+    <div class="store-row">
+      <a class="store-badge" href="https://apps.apple.com/us/app/mission-chrono/id6807101720" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8.19-.03 2.02-.9 4-.6 1.13.17 2.24.68 2.94 1.58-.09.06-1.75 1.02-1.73 3.05.02 2.44 2.14 3.25 2.16 3.26-.02.05-.34 1.17-1.11 2.31-.67.98-1.36 1.94-2.34 1.96l.001-.001M12.9 5.53C13.35 3.9 15.02 2.66 16.4 2.6c.19 1.7-.5 3.4-1.44 4.6-.98 1.23-2.61 2.16-4.14 2.02-.24-1.62.53-3.28 1.08-4.7z"/></svg>
+        <span class="store-label"><span>Télécharger sur</span><span>l'App Store</span></span>
+      </a>
+      <a class="store-badge" href="https://play.google.com/store/apps/details?id=com.mission_chrono.app&hl=fr" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 2.53c-.36.38-.57.97-.57 1.73v15.48c0 .76.21 1.35.58 1.72l.11.09L12.62 12v-.24L3.71 2.44l-.11.09z"/><path d="M15.6 15l-3-3v-.24l3-3 .07.04 3.56 2.02c1.01.58 1.01 1.53 0 2.11l-3.56 2.03-.07.04z" opacity=".7"/><path d="M15.67 14.96l-3.05-3.05-9.02 9.11c.34.35.9.4 1.53.05l10.54-6.11" opacity=".85"/><path d="M15.67 8.05L5.13 1.94c-.63-.36-1.19-.3-1.53.05l9.02 9.1 3.05-3.04z" opacity=".85"/></svg>
+        <span class="store-label"><span>Disponible sur</span><span>Google Play</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="brand">
+          <img class="brand-mark" src="/logo.png" alt="Mission Chrono">
+          <span class="brand-text"><span class="bt1">Mission</span><span class="bt2">Chrono</span></span>
+        </a>
+        <span class="footer-tagline">Ensemble, plus loin.</span>
+      </div>
+      <div class="footer-links">
+        <a href="/">Accueil</a>
+        <a href="/fonctionnalites/">Fonctionnalités</a>
+        <a href="/actualites/">Actualités</a>
+        <a href="/confidentialite/">Confidentialité</a>
+      </div>
+      <div class="footer-social" aria-hidden="true">
+        <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9.5 9H13v1.7c.6-1 1.9-2 3.8-2 4 0 4.7 2.6 4.7 6V21h-4v-5.5c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9V21h-4z"/></svg></span>
+        <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 8.2s-.2-1.6-.8-2.3c-.8-.9-1.7-.9-2.1-1C16.4 4.6 12 4.6 12 4.6h0s-4.4 0-7.1.3c-.4 0-1.3.1-2.1 1C2.2 6.6 2 8.2 2 8.2S1.8 10 1.8 11.9v1.7c0 1.9.2 3.7.2 3.7s.2 1.6.8 2.3c.8 1 1.9.9 2.4 1 1.7.2 7.3.3 7.3.3s4.4 0 7.1-.3c.4 0 1.3-.1 2.1-1 .6-.7.8-2.3.8-2.3s.2-1.9.2-3.7v-1.7c0-1.9-.2-3.7-.2-3.7zM9.9 15.3V8.8l6 3.3z"/></svg></span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></span>
+      </div>
+      <div class="footer-qr">
+        <img src="/bug-report-qr.png" alt="QR code vers le formulaire de signalement de bug" width="54" height="54">
+        <div class="footer-qr-text">
+          <span>Signaler un bug — période de test &amp; au-delà</span>
+          <a href="https://www.appify.design/fr/bug-review" target="_blank" rel="noopener">appify.design/fr/bug-review</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Mission Chrono</span>
+      <div class="footer-bottom-links">
+        <a href="/confidentialite/">Mentions légales</a>
+        <a href="mailto:missionchrono.service@gmail.com">Contact</a>
+      </div>
+      <span class="flag-bar" aria-hidden="true"><span></span><span></span><span></span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
