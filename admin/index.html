@@ -1,0 +1,427 @@
+<title>Administration — Mission Chrono</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="stylesheet" href="/style.css">
+<style>
+  body { padding-bottom: 60px; }
+  .admin-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0; border-bottom: 1px solid var(--line); margin-bottom: 32px;
+  }
+  .admin-header a.back { font-size: 13px; color: var(--ink-dim); text-decoration: none; }
+  .admin-header a.back:hover { color: var(--ink); }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .panel h2 { font-size: 18px; margin-bottom: 6px; }
+  .panel .hint { color: var(--ink-faint); font-size: 12.5px; margin: 0 0 18px; line-height: 1.6; }
+  .panel .hint ol { margin: 6px 0 0; padding-left: 18px; }
+  .panel .hint code {
+    background: var(--surface-2); border-radius: 4px; padding: 1px 5px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px;
+  }
+
+  label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-dim); margin-bottom: 6px; }
+  .field { margin-bottom: 16px; }
+  input[type="text"], input[type="password"], input[type="date"], select, textarea {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--focus); outline-offset: 1px; }
+  textarea { min-height: 90px; resize: vertical; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .field-row { grid-template-columns: 1fr; } }
+
+  .btn-primary, .btn-secondary, .btn-danger {
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px; font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); color: #04060b; }
+  .btn-primary:hover { background: var(--accent-2); }
+  .btn-primary:disabled { opacity: 0.5; cursor: default; }
+  .btn-secondary { background: transparent; border-color: var(--line-strong); color: var(--ink-dim); }
+  .btn-secondary:hover { color: var(--ink); border-color: var(--accent); }
+  .btn-danger { background: transparent; border-color: rgba(224, 71, 63, 0.5); color: #ff8a83; font-size: 12.5px; padding: 6px 12px; }
+  .btn-danger:hover { background: rgba(224, 71, 63, 0.1); }
+
+  .form-actions { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .status-msg { font-size: 13px; margin-top: 4px; }
+  .status-msg.ok { color: #8fd18c; }
+  .status-msg.error { color: #ff8a83; }
+  .status-msg.pending { color: var(--ink-dim); }
+
+  .post-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .post-row:last-child { border-bottom: none; }
+  .post-row .post-main { flex: 1; min-width: 0; }
+  .post-row .post-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 3px; }
+  .post-row .post-badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    background: var(--accent); color: #04060b; padding: 2px 8px; border-radius: 5px;
+  }
+  .post-row .post-date { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-faint); }
+  .post-row .post-title { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+  .post-row .post-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  .empty-note { color: var(--ink-faint); font-size: 13px; }
+</style>
+
+<div class="wrap">
+  <div class="admin-header">
+    <a href="/" class="brand">
+      <img class="brand-mark" src="/logo.png" alt="Mission Chrono">
+      <span class="brand-text"><span class="bt1">Mission</span><span class="bt2">Chrono</span></span>
+    </a>
+    <a class="back" href="/actualites/">← Voir la page Actualités</a>
+  </div>
+
+  <div id="loginPanel" class="panel">
+    <h2>Connexion</h2>
+    <p class="hint">
+      Cette page publie directement sur le dépôt GitHub du site. Elle nécessite un jeton d'accès personnel GitHub, créé une seule fois :
+      <ol>
+        <li>Sur GitHub : Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</li>
+        <li>Resource owner : le compte propriétaire du dépôt <code>missionchrono.fr</code></li>
+        <li>Repository access : Only select repositories → <code>missionchrono.fr</code></li>
+        <li>Permissions → Contents : Read and write</li>
+        <li>Générer, copier le jeton (commence par <code>github_pat_</code>) et le coller ci-dessous</li>
+      </ol>
+      Le jeton reste uniquement dans ce navigateur (stockage local) — il n'est jamais envoyé ailleurs qu'à GitHub.
+    </p>
+    <div class="field">
+      <label for="tokenInput">Jeton d'accès GitHub</label>
+      <input type="password" id="tokenInput" placeholder="github_pat_…" autocomplete="off">
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn-primary" id="loginBtn">Se connecter</button>
+      <span class="status-msg" id="loginStatus"></span>
+    </div>
+  </div>
+
+  <div id="adminPanel" style="display:none;">
+    <div class="admin-header" style="border:none;padding:0 0 8px;margin-bottom:12px;">
+      <h2 style="margin:0;font-size:16px;">Actualités</h2>
+      <button type="button" class="btn-secondary" id="logoutBtn" style="font-size:12.5px;padding:6px 14px;">Se déconnecter</button>
+    </div>
+
+    <div class="panel">
+      <h2 id="formTitle">Nouvelle actualité</h2>
+      <p class="hint" style="margin-bottom:16px;">Ce formulaire modifie directement <code>news.json</code> sur GitHub. La page Actualités se met à jour environ une minute après publication.</p>
+      <form id="postForm">
+        <div class="field-row">
+          <div class="field">
+            <label for="titleInput">Titre</label>
+            <input type="text" id="titleInput" required>
+          </div>
+          <div class="field">
+            <label for="dateInput">Date</label>
+            <input type="date" id="dateInput" required>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="badgeInput">Catégorie</label>
+            <input type="text" id="badgeInput" list="badgeOptions" placeholder="Nouveauté">
+            <datalist id="badgeOptions">
+              <option value="Nouveauté">
+              <option value="Mise à jour">
+              <option value="Actualité">
+            </datalist>
+          </div>
+          <div class="field">
+            <label for="iconSelect">Icône</label>
+            <select id="iconSelect">
+              <option value="phone">Téléphone / application</option>
+              <option value="bolt">Mise à jour</option>
+              <option value="people">Communauté</option>
+              <option value="calendar">Planification</option>
+              <option value="car">Trajet</option>
+              <option value="megaphone">Annonce</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="bodyInput">Texte</label>
+          <textarea id="bodyInput" required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" id="submitBtn">Publier</button>
+          <button type="button" class="btn-secondary" id="cancelEditBtn" style="display:none;">Annuler la modification</button>
+          <span class="status-msg" id="formStatus"></span>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2>Actualités publiées</h2>
+      <div id="postsList"><p class="empty-note">Chargement…</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var REPO_OWNER = 'EsoLaoShi';
+  var REPO_NAME = 'missionchrono.fr';
+  var BRANCH = 'main';
+  var FILE_PATH = 'news.json';
+  var API_URL = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH;
+  var TOKEN_KEY = 'mc_admin_token';
+
+  var loginPanel = document.getElementById('loginPanel');
+  var adminPanel = document.getElementById('adminPanel');
+  var tokenInput = document.getElementById('tokenInput');
+  var loginBtn = document.getElementById('loginBtn');
+  var loginStatus = document.getElementById('loginStatus');
+  var logoutBtn = document.getElementById('logoutBtn');
+
+  var form = document.getElementById('postForm');
+  var formTitle = document.getElementById('formTitle');
+  var titleInput = document.getElementById('titleInput');
+  var dateInput = document.getElementById('dateInput');
+  var badgeInput = document.getElementById('badgeInput');
+  var iconSelect = document.getElementById('iconSelect');
+  var bodyInput = document.getElementById('bodyInput');
+  var submitBtn = document.getElementById('submitBtn');
+  var cancelEditBtn = document.getElementById('cancelEditBtn');
+  var formStatus = document.getElementById('formStatus');
+  var postsList = document.getElementById('postsList');
+
+  var editingId = null;
+  var currentSha = null;
+
+  function getToken() { return localStorage.getItem(TOKEN_KEY); }
+  function setToken(t) { localStorage.setItem(TOKEN_KEY, t); }
+  function clearToken() { localStorage.removeItem(TOKEN_KEY); }
+
+  function b64EncodeUnicode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (m, p1) {
+      return String.fromCharCode(parseInt(p1, 16));
+    }));
+  }
+  function b64DecodeUnicode(str) {
+    return decodeURIComponent(atob(str).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function setStatus(el, text, kind) {
+    el.textContent = text || '';
+    el.className = 'status-msg' + (kind ? ' ' + kind : '');
+  }
+
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  async function githubGet() {
+    var res = await fetch(API_URL + '?ref=' + BRANCH, {
+      headers: { 'Authorization': 'Bearer ' + getToken(), 'Accept': 'application/vnd.github+json' }
+    });
+    if (res.status === 404) return { posts: [], sha: null };
+    if (res.status === 401 || res.status === 403) throw new Error('Jeton invalide ou permissions insuffisantes.');
+    if (!res.ok) throw new Error('Erreur GitHub (' + res.status + ')');
+    var data = await res.json();
+    var posts = [];
+    try { posts = JSON.parse(b64DecodeUnicode(data.content)); } catch (e) { posts = []; }
+    return { posts: posts, sha: data.sha };
+  }
+
+  async function githubPut(posts, sha, message) {
+    var body = {
+      message: message,
+      content: b64EncodeUnicode(JSON.stringify(posts, null, 2) + '\n'),
+      branch: BRANCH
+    };
+    if (sha) body.sha = sha;
+    var res = await fetch(API_URL, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      var err = await res.json().catch(function () { return {}; });
+      throw new Error(err.message || ('Erreur GitHub (' + res.status + ')'));
+    }
+    return res.json();
+  }
+
+  function resetForm() {
+    editingId = null;
+    form.reset();
+    dateInput.value = todayISO();
+    formTitle.textContent = 'Nouvelle actualité';
+    submitBtn.textContent = 'Publier';
+    cancelEditBtn.style.display = 'none';
+  }
+
+  function fillFormForEdit(post) {
+    editingId = post.id;
+    titleInput.value = post.title || '';
+    dateInput.value = post.date || todayISO();
+    badgeInput.value = post.badge || '';
+    iconSelect.value = post.icon || 'megaphone';
+    bodyInput.value = post.body || '';
+    formTitle.textContent = 'Modifier l’actualité';
+    submitBtn.textContent = 'Enregistrer les modifications';
+    cancelEditBtn.style.display = 'inline-flex';
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderPosts(posts) {
+    var sorted = posts.slice().sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+    if (!sorted.length) {
+      postsList.innerHTML = '<p class="empty-note">Aucune actualité pour le moment.</p>';
+      return;
+    }
+    postsList.innerHTML = '';
+    sorted.forEach(function (p) {
+      var row = document.createElement('div');
+      row.className = 'post-row';
+      row.innerHTML =
+        '<div class="post-main">' +
+          '<div class="post-meta"><span class="post-badge">' + esc(p.badge || 'Actualité') + '</span><span class="post-date">' + esc(p.date) + '</span></div>' +
+          '<div class="post-title">' + esc(p.title) + '</div>' +
+        '</div>' +
+        '<div class="post-actions">' +
+          '<button type="button" class="btn-secondary" data-edit="' + esc(p.id) + '" style="font-size:12.5px;padding:6px 14px;">Modifier</button>' +
+          '<button type="button" class="btn-danger" data-delete="' + esc(p.id) + '">Supprimer</button>' +
+        '</div>';
+      postsList.appendChild(row);
+    });
+
+    postsList.querySelectorAll('[data-edit]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var post = posts.find(function (p) { return p.id === btn.getAttribute('data-edit'); });
+        if (post) fillFormForEdit(post);
+      });
+    });
+    postsList.querySelectorAll('[data-delete]').forEach(function (btn) {
+      btn.addEventListener('click', async function () {
+        var post = posts.find(function (p) { return p.id === btn.getAttribute('data-delete'); });
+        if (!post) return;
+        if (!confirm('Supprimer l’actualité « ' + post.title + ' » ?')) return;
+        try {
+          var current = await githubGet();
+          var updated = current.posts.filter(function (p) { return p.id !== post.id; });
+          await githubPut(updated, current.sha, 'Suppression actualité : ' + post.title);
+          loadPosts();
+        } catch (err) {
+          alert('Erreur lors de la suppression : ' + err.message);
+        }
+      });
+    });
+  }
+
+  async function loadPosts() {
+    postsList.innerHTML = '<p class="empty-note">Chargement…</p>';
+    try {
+      var result = await githubGet();
+      currentSha = result.sha;
+      renderPosts(result.posts);
+    } catch (err) {
+      postsList.innerHTML = '<p class="empty-note">Erreur : ' + esc(err.message) + '</p>';
+    }
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    setStatus(formStatus, 'Publication en cours…', 'pending');
+    try {
+      var current = await githubGet();
+      var entry = {
+        id: editingId || String(Date.now()),
+        date: dateInput.value,
+        badge: badgeInput.value.trim() || 'Actualité',
+        icon: iconSelect.value,
+        title: titleInput.value.trim(),
+        body: bodyInput.value.trim()
+      };
+      var updated;
+      if (editingId) {
+        updated = current.posts.map(function (p) { return p.id === editingId ? entry : p; });
+      } else {
+        updated = current.posts.concat([entry]);
+      }
+      await githubPut(updated, current.sha, (editingId ? 'Actualité modifiée : ' : 'Nouvelle actualité : ') + entry.title);
+      setStatus(formStatus, 'Publié. La page Actualités se mettra à jour dans une minute environ.', 'ok');
+      resetForm();
+      renderPosts(updated);
+    } catch (err) {
+      setStatus(formStatus, 'Erreur : ' + err.message, 'error');
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  cancelEditBtn.addEventListener('click', resetForm);
+
+  function showAdmin() {
+    loginPanel.style.display = 'none';
+    adminPanel.style.display = 'block';
+    resetForm();
+    loadPosts();
+  }
+
+  loginBtn.addEventListener('click', async function () {
+    var t = tokenInput.value.trim();
+    if (!t) return;
+    loginBtn.disabled = true;
+    setStatus(loginStatus, 'Vérification…', 'pending');
+    setToken(t);
+    try {
+      await githubGet();
+      setStatus(loginStatus, '', null);
+      showAdmin();
+    } catch (err) {
+      clearToken();
+      setStatus(loginStatus, err.message, 'error');
+    } finally {
+      loginBtn.disabled = false;
+    }
+  });
+
+  logoutBtn.addEventListener('click', function () {
+    clearToken();
+    adminPanel.style.display = 'none';
+    loginPanel.style.display = 'block';
+    tokenInput.value = '';
+  });
+
+  if (getToken()) {
+    showAdmin();
+  }
+})();
+</script>

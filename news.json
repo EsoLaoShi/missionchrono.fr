@@ -1,0 +1,26 @@
+[
+  {
+    "id": "post-1",
+    "date": "2026-09-12",
+    "badge": "Nouveauté",
+    "icon": "phone",
+    "title": "Lancement de la phase de test",
+    "body": "L'application Mission Chrono est désormais disponible en phase de test sur iOS et Android. Vos retours nous aident à l'améliorer."
+  },
+  {
+    "id": "post-2",
+    "date": "2026-09-05",
+    "badge": "Mise à jour",
+    "icon": "bolt",
+    "title": "Améliorations de la stabilité",
+    "body": "Cette nouvelle version corrige plusieurs problèmes détectés et améliore la stabilité générale de l'application."
+  },
+  {
+    "id": "post-3",
+    "date": "2026-08-28",
+    "badge": "Actualité",
+    "icon": "people",
+    "title": "Une communauté qui grandit",
+    "body": "De plus en plus de militaires nous rejoignent chaque jour. Merci pour votre confiance et vos retours !"
+  }
+]

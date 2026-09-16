@@ -180,50 +180,8 @@
 <section class="news">
   <div class="wrap">
     <h2>Toutes les actualités</h2>
-    <div class="news-list">
-
-      <div class="news-item">
-        <div class="photo-slot">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
-        </div>
-        <div class="news-content">
-          <div class="news-meta">
-            <span class="news-badge">Nouveauté</span>
-            <span class="news-date">12 septembre 2026</span>
-          </div>
-          <h3>Lancement de la phase de test</h3>
-          <p>L'application Mission Chrono est désormais disponible en phase de test sur iOS et Android. Vos retours nous aident à l'améliorer.</p>
-        </div>
-      </div>
-
-      <div class="news-item">
-        <div class="photo-slot">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
-        </div>
-        <div class="news-content">
-          <div class="news-meta">
-            <span class="news-badge">Mise à jour</span>
-            <span class="news-date">5 septembre 2026</span>
-          </div>
-          <h3>Améliorations de la stabilité</h3>
-          <p>Cette nouvelle version corrige plusieurs problèmes détectés et améliore la stabilité générale de l'application.</p>
-        </div>
-      </div>
-
-      <div class="news-item">
-        <div class="photo-slot">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 19c0-3 2.7-5.5 6-5.5s6 2.5 6 5.5M13 13.7c2.8.4 5 2.6 5 5.3"/></svg>
-        </div>
-        <div class="news-content">
-          <div class="news-meta">
-            <span class="news-badge">Actualité</span>
-            <span class="news-date">28 août 2026</span>
-          </div>
-          <h3>Une communauté qui grandit</h3>
-          <p>De plus en plus de militaires nous rejoignent chaque jour. Merci pour votre confiance et vos retours !</p>
-        </div>
-      </div>
-
+    <div class="news-list" id="newsList">
+      <p style="color:var(--ink-faint);font-size:14px;">Chargement des actualités…</p>
     </div>
   </div>
 </section>
@@ -308,3 +266,41 @@
 </footer>
 
 <script src="/site.js"></script>
+<script>
+  (function () {
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function formatDate(iso) {
+      var d = new Date(iso + 'T00:00:00');
+      if (isNaN(d)) return iso;
+      return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+    }
+    var list = document.getElementById('newsList');
+    fetch('/news.json', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (posts) {
+        posts = (posts || []).slice().sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+        if (!posts.length) {
+          list.innerHTML = '<p style="color:var(--ink-faint);font-size:14px;">Aucune actualité pour le moment.</p>';
+          return;
+        }
+        list.innerHTML = posts.map(function (p) {
+          var icon = (window.NEWS_ICONS && window.NEWS_ICONS[p.icon]) || (window.NEWS_ICONS && window.NEWS_ICONS.megaphone) || '';
+          return '<div class="news-item">' +
+            '<div class="photo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + icon + '</svg></div>' +
+            '<div class="news-content">' +
+              '<div class="news-meta"><span class="news-badge">' + esc(p.badge || 'Actualité') + '</span><span class="news-date">' + esc(formatDate(p.date)) + '</span></div>' +
+              '<h3>' + esc(p.title) + '</h3>' +
+              '<p>' + esc(p.body) + '</p>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      })
+      .catch(function () {
+        list.innerHTML = '<p style="color:var(--ink-faint);font-size:14px;">Impossible de charger les actualités pour le moment.</p>';
+      });
+  })();
+</script>
